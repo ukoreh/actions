@@ -53,8 +53,8 @@ jobs:
       - name: Clone or Checkout repository
         uses: actions/checkout@v2
         with:
-          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          repository: ${{ github.event.inputs.repo }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: ${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
 
       - name: Check if 'web' folder exists
         id: web-folder
