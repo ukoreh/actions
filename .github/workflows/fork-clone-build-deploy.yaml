@@ -24,9 +24,6 @@ jobs:
       - name: ${{ github.event.inputs.run-id }}
         run: echo "run identifier ${{ github.event.inputs.run-id }}"
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Fork repository
         uses: actions/github-script@v4
         with:
@@ -52,6 +49,12 @@ jobs:
             }
 
             forkRepo();
+
+      - name: Clone or Checkout repository
+        uses: actions/checkout@v2
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: ${{ github.event.inputs.repo }}
 
       - name: Check if 'web' folder exists
         id: web-folder
