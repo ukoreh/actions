@@ -1,0 +1,82 @@
+name: Fork - Clone - Build flutter App - Deploy to gh-pages
+on:
+  push: #initially create the workflow when we first do our git push, otherwise, we will get a 404 NOT FOUND error when we first invoke the workflow API
+  workflow_dispatch:
+    inputs:
+      owner:
+        description: 'Repository Owner'     
+        required: true
+      repo:
+        description: 'Repository'     
+        required: true
+      fork-org:
+        description: 'Fork organization'     
+        required: true
+      run-id:
+        description: 'Run identifier'
+        required: true
+
+jobs:
+  webfolder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ${{ github.event.inputs.run-id }}
+        run: echo "run identifier ${{ github.event.inputs.run-id }}"
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fork repository
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          script: |
+            const owner = '${{ github.event.inputs.owner }}';
+            const repo = '${{ github.event.inputs.repo }}';
+            const org = '${{ github.event.inputs.fork-org }}';
+            const name = `${owner}-${repo}`;
+
+            async function forkRepo() {
+              try {
+                const response = await github.repos.createFork({
+                  owner: owner,
+                  repo: repo,
+                  organization: org,
+                  name: name
+                });
+                console.log(`Repository ${response.data.full_name} forked to organization ${org}`);
+              } catch (error) {
+                console.error('Failed to fork repository:', error);
+              }
+            }
+
+            forkRepo();
+
+      - name: Check if 'web' folder exists
+        id: web-folder
+        run: |
+          echo ${{ github.event.inputs.repo }}
+
+          if  [ -f ${{ github.workspace }}/pubspec.yaml ] && [ -d ${{ github.workspace }}/web ]; then
+            echo "'web' folder exists in root."
+            echo "WEB_FOLDER_LOCATION=" >> "$GITHUB_OUTPUT"
+          else
+            echo "'web' folder does not exist in root."
+
+            # Find the directory containing the file 'pubspec.yaml'
+            PUBSPEC_DIR=$(find /${{ github.workspace }} -name "pubspec.yaml" -exec dirname {} \;)
+
+            # Check if 'web' folder exists in the same directory as 'pubspec.yaml'
+            if [ -d "$PUBSPEC_DIR/web" ]; then
+              echo "'web' folder exists in the same directory as 'pubspec.yaml'."
+              "WEB_FOLDER_LOCATION=/$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
+            else
+              echo "'web' folder does not exist in the same directory as 'pubspec.yaml'."
+              exit 1
+            fi
+          fi
+
+      - name: echo WEB_FOLDER_LOCATION
+        run: |
+          echo ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
