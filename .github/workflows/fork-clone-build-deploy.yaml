@@ -20,7 +20,7 @@ jobs:
   webfolder:
     runs-on: ubuntu-latest
     env:
-      new-repo-name: -${{ github.event.inputs.owner }}${{ github.event.inputs.repo }}
+      new-repo-name: ${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
     steps:
       - name: ${{ github.event.inputs.run-id }}
         run: |
