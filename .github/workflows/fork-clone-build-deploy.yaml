@@ -59,19 +59,14 @@ jobs:
       - name: Check if 'web' folder exists
         id: web-folder
         run: |
-          ls
-          echo ${{ github.event.inputs.repo }}
-
-          if  [ -f ${{ github.workspace }}/pubspec.yaml ] && [ -d ${{ github.workspace }}/web ]; then
+          if  [ -f ./pubspec.yaml ] && [ -d ./web ]; then
             echo "'web' folder exists in root."
             echo "WEB_FOLDER_LOCATION=" >> "$GITHUB_OUTPUT"
           else
             echo "'web' folder does not exist in root."
 
             # Find the directory containing the file 'pubspec.yaml'
-            PUBSPEC_DIR=$(find /${{ github.workspace }} -name "pubspec.yaml" -exec dirname {} \;)
-
-            echo $PUBSPEC_DIR
+            PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
 
             # Check if 'web' folder exists in the same directory as 'pubspec.yaml'
             if [ -d "$PUBSPEC_DIR/web" ]; then
