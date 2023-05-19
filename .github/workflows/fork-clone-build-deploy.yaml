@@ -59,6 +59,7 @@ jobs:
       - name: Check if 'web' folder exists
         id: web-folder
         run: |
+          ls
           echo ${{ github.event.inputs.repo }}
 
           if  [ -f ${{ github.workspace }}/pubspec.yaml ] && [ -d ${{ github.workspace }}/web ]; then
