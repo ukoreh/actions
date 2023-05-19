@@ -103,5 +103,5 @@ jobs:
         with:
           personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           publish_dir: ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}/build/web 
-          external_repository: ${{ github.event.inputs.repo }}
+          external_repository: ${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
           publish_branch: gh-pages
