@@ -35,7 +35,7 @@ jobs:
             const owner = '${{ github.event.inputs.owner }}';
             const repo = '${{ github.event.inputs.repo }}';
             const org = '${{ github.event.inputs.fork-org }}';
-            const name = ${{ env.new-repo-name }};
+            const name = '${{ env.new-repo-name }}';
 
             async function forkRepo() {
               try {
