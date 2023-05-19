@@ -68,10 +68,11 @@ jobs:
             # Find the directory containing the file 'pubspec.yaml'
             PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
 
+
             # Check if 'web' folder exists in the same directory as 'pubspec.yaml'
             if [ -d "$PUBSPEC_DIR/web" ]; then
               echo "'web' folder exists in the same directory as 'pubspec.yaml'."
-              "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
+              echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
             else
               echo "'web' folder does not exist in the same directory as 'pubspec.yaml'."
               exit 1
