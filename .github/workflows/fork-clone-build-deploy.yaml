@@ -19,10 +19,13 @@ on:
 jobs:
   webfolder:
     runs-on: ubuntu-latest
-
+    env:
+      new-repo-name: -${{ github.event.inputs.owner }}${{ github.event.inputs.repo }}
     steps:
       - name: ${{ github.event.inputs.run-id }}
-        run: echo "run identifier ${{ github.event.inputs.run-id }}"
+        run: |
+          echo "run identifier ${{ github.event.inputs.run-id }}"
+          echo "new-repo-name $new-repo-name"
 
       - name: Fork repository
         uses: actions/github-script@v4
@@ -32,7 +35,7 @@ jobs:
             const owner = '${{ github.event.inputs.owner }}';
             const repo = '${{ github.event.inputs.repo }}';
             const org = '${{ github.event.inputs.fork-org }}';
-            const name = `${owner}-${repo}`;
+            const name = $new-repo-name;
 
             async function forkRepo() {
               try {
@@ -54,7 +57,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          repository: ${{ github.event.inputs.fork-org }}/${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
+          repository: ${{ github.event.inputs.fork-org }}/$new-repo-name
 
       - name: Check if 'web' folder exists
         id: web-folder
@@ -96,12 +99,12 @@ jobs:
       - name: Build web app
         run: |
           cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
-          flutter build web --release --base-href "/${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}/"
+          flutter build web --release --base-href "/$new-repo-name/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           publish_dir: ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}/build/web 
-          external_repository: ${{ github.event.inputs.fork-org }}/${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
+          external_repository: ${{ github.event.inputs.fork-org }}/$new-repo-name
           publish_branch: gh-pages
