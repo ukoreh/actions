@@ -64,16 +64,6 @@ jobs:
         with:
           flutter-version: "3.7.6"
 
-      - name: Clean flutter
-        run: |
-          cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
-          flutter clean
-
-      - name: Get packages
-        run: |
-          cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
-          flutter pub get
-
       - name: Check if 'web' folder exists
         id: web-folder
         run: |
@@ -99,6 +89,16 @@ jobs:
               echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
             fi
           fi
+
+      - name: Clean flutter
+        run: |
+          cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
+          flutter clean
+
+      - name: Get packages
+        run: |
+          cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
+          flutter pub get
 
       - name: Build web app
         run: |
