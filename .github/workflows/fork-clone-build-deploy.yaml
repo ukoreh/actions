@@ -76,8 +76,12 @@ jobs:
               echo "'web' folder exists in the same directory as 'pubspec.yaml'."
               echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
             else
-              echo "'web' folder does not exist in the same directory as 'pubspec.yaml'."
-              exit 1
+              echo "'web' folder does not exist in the same directory as 'pubspec.yaml'. So create it!!!"
+
+              cd $PUBSPEC_DIR
+              flutter create --platforms web
+              
+              echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
             fi
           fi
 
