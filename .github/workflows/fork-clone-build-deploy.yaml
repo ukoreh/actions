@@ -76,7 +76,7 @@ jobs:
 
       - name: Find supported Flutter version
         id: flutter-version-finder
-        uses: ukoreh/actions/flutter-version-finder@2adf6f087c85e510fc800c0f38a432425f7fc392
+        uses: ukoreh/actions/flutter-version-finder@10216ce12ece5e23b95406dcd61504e43cc50b96
         with:
           project-path: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
 
