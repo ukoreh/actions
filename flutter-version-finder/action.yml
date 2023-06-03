@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: "ukoreh"
+description: "Finds the Flutter version supported to run a Flutter project"
+author: "ukoreh"
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  project-path:
+    required: false
+    description: "Path to Flutter project"
+outputs:
+  flutter-version:
+    description: "Supported Flutter version found"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"

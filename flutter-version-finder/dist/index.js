@@ -40,16 +40,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(817);
+const flutter_version_finder_1 = __importStar(__nccwpck_require__(892));
+const fs_1 = __nccwpck_require__(147);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield (0, wait_1.wait)(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput('time', new Date().toTimeString());
+            const path = process.cwd();
+            core.info(`Finding supported Flutter version for project in path: ${path}`);
+            const pubspecLockFile = `${path}/pubspec.lock`;
+            const pubspecYAMLFile = `${path}/pubspec.yaml`;
+            let yamlFilePath = pubspecLockFile;
+            let flutterVersion = flutter_version_finder_1.FallbackVersion;
+            if (!(0, fs_1.existsSync)(pubspecLockFile)) {
+                core.info(`pubspec.lock doesn't exist, trying pubspec.yaml...`);
+                yamlFilePath = pubspecYAMLFile;
+                if (!(0, fs_1.existsSync)(pubspecYAMLFile)) {
+                    core.warning(`pubspec.yaml also doesn't exist, fallbacking to version: ${flutterVersion.flutter}`);
+                    return Promise.resolve();
+                }
+            }
+            core.info(`using ${yamlFilePath} to get supported Flutter version...`);
+            const yaml = (0, fs_1.readFileSync)(yamlFilePath).toString();
+            flutterVersion = (0, flutter_version_finder_1.default)(yaml);
+            core.setOutput('flutter-version', flutterVersion.flutter);
         }
         catch (error) {
             if (error instanceof Error)
@@ -58,37 +71,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
@@ -1851,6 +1833,174 @@ function checkBypass(reqUrl) {
 }
 exports.checkBypass = checkBypass;
 //# sourceMappingURL=proxy.js.map
+
+/***/ }),
+
+/***/ 892:
+/***/ ((module) => {
+
+"use strict";
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  FallbackVersion: () => FallbackVersion,
+  UnknownDartVersion: () => UnknownDartVersion,
+  default: () => handler_default
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/version.ts
+var supportedVersions = [
+  { flutter: "3.10.2", dart: "3.0.2" },
+  { flutter: "3.10.1", dart: "3.0.1" },
+  { flutter: "3.10.0", dart: "3.0.0" },
+  { flutter: "3.7.12", dart: "2.19.6" },
+  { flutter: "3.7.11", dart: "2.19.6" },
+  { flutter: "3.7.10", dart: "2.19.6" },
+  { flutter: "3.7.9", dart: "2.19.6" },
+  { flutter: "3.7.8", dart: "2.19.5" },
+  { flutter: "3.7.7", dart: "2.19.4" },
+  { flutter: "3.7.6", dart: "2.19.3" },
+  { flutter: "3.7.5", dart: "2.19.2" },
+  { flutter: "3.7.4", dart: "2.19.2" },
+  { flutter: "3.7.3", dart: "2.19.2" },
+  { flutter: "3.7.2", dart: "2.19.2" },
+  { flutter: "3.7.1", dart: "2.19.1" },
+  { flutter: "3.7.0", dart: "2.19.0" },
+  { flutter: "3.3.10", dart: "2.18.6" },
+  { flutter: "3.3.9", dart: "2.18.5" },
+  { flutter: "3.3.8", dart: "2.18.4" },
+  { flutter: "3.3.7", dart: "2.18.4" },
+  { flutter: "3.3.6", dart: "2.18.2" },
+  { flutter: "3.3.5", dart: "2.18.2" },
+  { flutter: "3.3.4", dart: "2.18.2" },
+  { flutter: "3.3.3", dart: "2.18.2" },
+  { flutter: "3.3.2", dart: "2.18.1" },
+  { flutter: "3.3.1", dart: "2.18.0" },
+  { flutter: "3.3.0", dart: "2.18.0" },
+  { flutter: "3.0.5", dart: "2.17.6" },
+  { flutter: "3.0.4", dart: "2.17.5" },
+  { flutter: "3.0.3", dart: "2.17.5" },
+  { flutter: "3.0.2", dart: "2.17.3" },
+  { flutter: "3.0.1", dart: "2.17.1" },
+  { flutter: "3.0.0", dart: "2.17.0" },
+  { flutter: "2.10.5", dart: "2.16.2" },
+  { flutter: "2.10.4", dart: "2.16.2" },
+  { flutter: "2.10.3", dart: "2.16.1" },
+  { flutter: "2.10.2", dart: "2.16.1" },
+  { flutter: "2.10.1", dart: "2.16.1" },
+  { flutter: "2.10.0", dart: "2.16.0" },
+  { flutter: "2.8.1", dart: "2.15.1" },
+  { flutter: "2.8.0", dart: "2.15.0" },
+  { flutter: "2.5.3", dart: "2.14.4" },
+  { flutter: "2.5.2", dart: "2.14.3" },
+  { flutter: "2.5.1", dart: "2.14.2" },
+  { flutter: "2.5.0", dart: "2.14.0" },
+  { flutter: "2.2.3", dart: "2.13.4" },
+  { flutter: "2.2.2", dart: "2.13.3" },
+  { flutter: "2.2.1", dart: "2.13.1" },
+  { flutter: "2.2.0", dart: "2.13.0" },
+  { flutter: "2.0.6", dart: "2.12.3" },
+  { flutter: "2.0.5", dart: "2.12.3" },
+  { flutter: "2.0.4", dart: "2.12.2" },
+  { flutter: "2.0.3", dart: "2.12.2" },
+  { flutter: "2.0.2", dart: "2.12.1" },
+  { flutter: "2.0.1", dart: "2.12.0" },
+  { flutter: "2.0.0", dart: "2.12.0" },
+  { flutter: "1.22.6", dart: "-" },
+  { flutter: "1.22.5", dart: "-" },
+  { flutter: "1.22.4", dart: "2.10.4" },
+  { flutter: "1.22.3", dart: "2.10.3" },
+  { flutter: "1.22.2", dart: "2.10.2" },
+  { flutter: "1.22.1", dart: "2.10.1" },
+  { flutter: "1.22.0", dart: "2.10.0" },
+  { flutter: "1.20.4", dart: "2.9.2" },
+  { flutter: "1.20.3", dart: "2.9.2" },
+  { flutter: "1.20.2", dart: "2.9.1" },
+  { flutter: "1.20.1", dart: "2.9.0" },
+  { flutter: "1.20.0", dart: "2.9.0" },
+  { flutter: "1.17.5", dart: "-" },
+  { flutter: "1.17.4", dart: "-" },
+  { flutter: "1.17.3", dart: "-" },
+  { flutter: "1.17.2", dart: "-" },
+  { flutter: "1.17.1", dart: "-" },
+  { flutter: "1.17.0", dart: "-" },
+  { flutter: "v1.12.13+hotfix.9", dart: "-" },
+  { flutter: "v1.12.13+hotfix.8", dart: "-" },
+  { flutter: "v1.12.13+hotfix.7", dart: "-" },
+  { flutter: "v1.12.13+hotfix.5", dart: "-" },
+  { flutter: "v1.9.1+hotfix.6", dart: "-" },
+  { flutter: "v1.9.1+hotfix.5", dart: "-" },
+  { flutter: "v1.9.1+hotfix.4", dart: "-" },
+  { flutter: "v1.9.1+hotfix.2", dart: "-" },
+  { flutter: "v1.7.8+hotfix.4", dart: "-" },
+  { flutter: "v1.7.8+hotfix.3", dart: "-" },
+  { flutter: "v1.7.8+hotfix.2", dart: "-" },
+  { flutter: "v1.5.4-hotfix.2", dart: "-" },
+  { flutter: "v1.2.1", dart: "-" },
+  { flutter: "v1.0.0", dart: "-" }
+];
+var FallbackVersion = supportedVersions[0];
+var UnknownDartVersion = "?";
+var version_default = supportedVersions;
+
+// src/matcher.ts
+function matcher_default(dart) {
+  const version = dart;
+  const supportedVersion = version_default.find((x) => x.dart === version);
+  if (supportedVersion) {
+    return supportedVersion;
+  }
+  const higherVersions = version_default.filter((x) => x.dart > version);
+  return higherVersions.length > 0 ? higherVersions[higherVersions.length - 1] : FallbackVersion;
+}
+
+// src/parser.ts
+var lockDartVersionRegex = /dart: ["|'](.){0,2}(([0-9]{1,}\.*){3})(.*)["|']/g;
+var yamlDartVersionRegex = /sdk: ["|'](.){0,2}(([0-9]{1,}\.*){3})(.*)["|']/g;
+function parser_default(yaml) {
+  var _a;
+  return (_a = extractDartVersionFromLock(yaml)) != null ? _a : extractDartVersionFromYAML(yaml);
+}
+function extractDartVersionFromLock(yaml) {
+  var _a;
+  lockDartVersionRegex.lastIndex = 0;
+  return (_a = lockDartVersionRegex.exec(yaml)) == null ? void 0 : _a.at(2);
+}
+function extractDartVersionFromYAML(yaml) {
+  var _a;
+  yamlDartVersionRegex.lastIndex = 0;
+  return (_a = yamlDartVersionRegex.exec(yaml)) == null ? void 0 : _a.at(2);
+}
+
+// src/handler.ts
+function handler_default(yaml) {
+  var _a;
+  const dartVersion = (_a = parser_default(yaml)) != null ? _a : UnknownDartVersion;
+  return matcher_default(dartVersion);
+}
+// Annotate the CommonJS export names for ESM import in node:
+0 && (0);
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
