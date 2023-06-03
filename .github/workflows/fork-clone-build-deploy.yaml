@@ -127,11 +127,20 @@ jobs:
         run: |
           cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
 
+          flutter_version=${{ steps.flutter-version-finder.outputs.flutter-channel }}
           base_href="/${{ env.new-repo-name }}/"
+
+          if [[ $flutter_version =~ [1|2]\.[0-4]{1,}.+ ]]; then
+            flutter web --release
+            
+            sed -i "s|href=\".*|href=\"$base_href\"|g" build/web/index.html
+            sed -i "s|src=\"|src=\"$base_href/|g" build/web/index.html
+          else
+            flutter web --release --base-href $base_href
+          fi
 
           flutter build web --release
           cat build/web/index.html
-          sed -i "s|<base href=\".*\">|<base href=$base_href>|g" build/web/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
