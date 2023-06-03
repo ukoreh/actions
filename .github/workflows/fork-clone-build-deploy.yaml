@@ -110,6 +110,8 @@ jobs:
 
             flutter create --platforms web .
 
+            ls
+
             echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
           fi
 
