@@ -45,7 +45,10 @@ const fs_1 = __nccwpck_require__(147);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const path = process.cwd();
+            let path = core.getInput('project-path');
+            if (path.length === 0) {
+                path = process.cwd();
+            }
             core.info(`Finding supported Flutter version for project in path: ${path}`);
             const pubspecLockFile = `${path}/pubspec.lock`;
             const pubspecYAMLFile = `${path}/pubspec.yaml`;
