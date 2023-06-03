@@ -1,0 +1,15 @@
+name: "ukoreh"
+description: "Finds the Flutter version supported to run a Flutter project"
+author: "ukoreh"
+inputs:
+  project-path:
+    required: false
+    description: "Path to Flutter project"
+outputs:
+  flutter-version:
+    description: "Supported Flutter version found"
+  flutter-channel:
+    description: "Supported Flutter channel"
+runs:
+  using: "node16"
+  main: "dist/index.js"

@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       owner:
-        description: 'Repository Owner'     
+        description: "Repository Owner"
         required: true
       repo:
-        description: 'Repository'     
+        description: "Repository"
         required: true
       fork-org:
-        description: 'Fork organization'     
+        description: "Fork organization"
         required: true
       run-id:
-        description: 'Run identifier'
+        description: "Run identifier"
         required: true
 
 jobs:
@@ -59,35 +59,55 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           repository: ${{ github.event.inputs.fork-org }}/${{ env.new-repo-name }}
 
+      - name: Find Flutter project path
+        id: flutter-project-project-path
+        run: |
+          if  [ -f ./pubspec.yaml ]; then
+            echo "FLUTTER_PROJECT_PATH=$PWD" >> "$GITHUB_OUTPUT"
+          else
+            # Find the directory containing the file 'pubspec.yaml'
+            PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
+
+            echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Find supported Flutter version
+        id: flutter-version-finder
+        uses: ukoreh/actions/flutter-version-finder@master
+        with:
+          project-path: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.7.6"
+          flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
+          channel: ${{ steps.flutter-version-finder.outputs.flutter-channel }}
+
+      - name: Setup Flutter web
+        run: |
+          channel=${{ steps.flutter-version-finder.outputs.flutter-channel }}
+
+          echo "on channel: $channel"
+
+          if [ "$channel" = "beta" ]; then
+            flutter config --enable-web
+          fi
 
       - name: Check if 'web' folder exists
         id: web-folder
         run: |
-          if  [ -f ./pubspec.yaml ] && [ -d ./web ]; then
-            echo "'web' folder exists in root."
-            echo "WEB_FOLDER_LOCATION=." >> "$GITHUB_OUTPUT"
+          cd ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
+
+          if [ -d "web" ]; then
+            echo "'web' folder exists in the same directory as 'pubspec.yaml'."
+
+            echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
           else
-            echo "'web' folder does not exist in root."
+            echo "'web' folder does not exist in the same directory as 'pubspec.yaml'. So create it!!!"
 
-            # Find the directory containing the file 'pubspec.yaml'
-            PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
+            flutter create --org com.ukoreh.actions --platforms web .
 
-            # Check if 'web' folder exists in the same directory as 'pubspec.yaml'
-            if [ -d "$PUBSPEC_DIR/web" ]; then
-              echo "'web' folder exists in the same directory as 'pubspec.yaml'."
-              echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
-            else
-              echo "'web' folder does not exist in the same directory as 'pubspec.yaml'. So create it!!!"
-
-              cd $PUBSPEC_DIR
-              flutter create --platforms web .
-
-              echo "WEB_FOLDER_LOCATION=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
-            fi
+            echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Clean flutter
@@ -103,12 +123,23 @@ jobs:
       - name: Build web app
         run: |
           cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
-          flutter build web --release --base-href "/${{ env.new-repo-name }}/"
+
+          flutter_version=${{ steps.flutter-version-finder.outputs.flutter-version }}
+          base_href="/${{ env.new-repo-name }}/"
+
+          if [[ "$flutter_version" =~ [1|2]\.[0-4]{1,}.+ ]]; then
+            flutter build web --release
+            
+            sed -i "s|<base href=.*>|<!-- empty -> g" build/web/index.html
+            sed -i "s|<head>|<head><base href=\"$base_href\">|g" build/web/index.html
+          else
+            flutter build web --release --base-href $base_href
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          publish_dir: ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}/build/web 
+          publish_dir: ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}/build/web
           external_repository: ${{ github.event.inputs.fork-org }}/${{ env.new-repo-name }}
           publish_branch: gh-pages
