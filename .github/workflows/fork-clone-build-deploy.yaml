@@ -76,7 +76,7 @@ jobs:
 
       - name: Find supported Flutter version
         id: flutter-version-finder
-        uses: ukoreh/actions/flutter-version-finder@10216ce12ece5e23b95406dcd61504e43cc50b96
+        uses: ukoreh/actions/flutter-version-finder@c1d2c8bdbc68ac0278d52fa3981a1ab39b29f653
         with:
           project-path: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
 
@@ -85,6 +85,14 @@ jobs:
         with:
           flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
           channel: ${{ steps.flutter-version-finder.outputs.flutter-channel }}
+        run: |
+          channel=${{ steps.flutter-version-finder.outputs.flutter-channel }}
+
+          echo "on channel: $channel"
+
+          if [ "$channel" = "beta" ]; then
+            flutter config --enable-web
+          fi
 
       - name: Check if 'web' folder exists
         id: web-folder
