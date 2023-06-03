@@ -127,7 +127,7 @@ jobs:
         run: |
           cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
 
-          flutter_version=${{ steps.flutter-version-finder.outputs.flutter-channel }}
+          flutter_version=${{ steps.flutter-version-finder.outputs.flutter-version }}
           base_href="/${{ env.new-repo-name }}/"
 
           echo "$flutter_version"
