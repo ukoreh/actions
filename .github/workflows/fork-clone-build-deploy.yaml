@@ -135,12 +135,11 @@ jobs:
             
             sed -i "s|href=\".*|href=\"$base_href\"|g" build/web/index.html
             sed -i "s|src=\"|src=\"$base_href/|g" build/web/index.html
+
+            cat build/web/index.html
           else
             flutter web --release --base-href $base_href
           fi
-
-          flutter build web --release
-          cat build/web/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
