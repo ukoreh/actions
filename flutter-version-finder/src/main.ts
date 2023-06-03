@@ -4,7 +4,11 @@ import { existsSync, readFileSync } from 'fs';
 
 async function run(): Promise<void> {
   try {
-    const path = process.cwd();
+    let path = core.getInput('project-path');
+
+    if (path.length === 0) {
+      path = process.cwd();
+    }
 
     core.info(`Finding supported Flutter version for project in path: ${path}`);
 
