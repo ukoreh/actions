@@ -105,7 +105,7 @@ jobs:
           else
             echo "'web' folder does not exist in the same directory as 'pubspec.yaml'. So create it!!!"
 
-            flutter create --platforms web .
+            flutter create --org com.ukoreh.actions --platforms web .
 
             echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
           fi
