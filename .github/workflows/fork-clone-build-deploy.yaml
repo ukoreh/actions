@@ -85,14 +85,6 @@ jobs:
         with:
           flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
           channel: ${{ steps.flutter-version-finder.outputs.flutter-channel }}
-        run: |
-          channel=${{ steps.flutter-version-finder.outputs.flutter-channel }}
-
-          echo "on channel: $channel"
-
-          if [ "$channel" = "beta" ]; then
-            flutter config --enable-web
-          fi
 
       - name: Check if 'web' folder exists
         id: web-folder
@@ -109,6 +101,16 @@ jobs:
             flutter create --platforms web .
 
             echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Flutter web
+        run: |
+          channel=${{ steps.flutter-version-finder.outputs.flutter-channel }}
+
+          echo "on channel: $channel"
+
+          if [ "$channel" = "beta" ]; then
+            flutter config --enable-web
           fi
 
       - name: Clean flutter
