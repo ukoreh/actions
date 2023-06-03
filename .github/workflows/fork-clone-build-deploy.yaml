@@ -71,9 +71,6 @@ jobs:
             echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
           fi
 
-          ls /home/runner/work/actions/actions/
-          ls /home/runner/work/actions
-
       - name: Find supported Flutter version
         id: flutter-version-finder
         uses: ukoreh/actions/flutter-version-finder@4c2d661697862c5c3514b97a69b9f649daa305bb
@@ -83,7 +80,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "1.20.2"
+          flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
           channel: ${{ steps.flutter-version-finder.outputs.flutter-channel }}
 
       - name: Setup Flutter web
@@ -110,8 +107,6 @@ jobs:
 
             flutter create --platforms web .
 
-            ls
-
             echo "WEB_FOLDER_LOCATION=$PWD" >> "$GITHUB_OUTPUT"
           fi
 
@@ -132,17 +127,11 @@ jobs:
           flutter_version=${{ steps.flutter-version-finder.outputs.flutter-version }}
           base_href="/${{ env.new-repo-name }}/"
 
-          echo "$flutter_version"
-
           if [[ "$flutter_version" =~ [1|2]\.[0-4]{1,}.+ ]]; then
             flutter build web --release
             
-            sed -i "s|href=\".*|href=\"$base_href\"|g" build/web/index.html
+            sed -i "s|<base href=.*>|<!-- empty -> g" build/web/index.html
             sed -i "s|<head>|<head><base href=\"$base_href\">|g" build/web/index.html
-
-            #sed -i "s|src=\"|src=\"$base_href/|g" build/web/index.html
-
-            cat build/web/index.html
           else
             flutter build web --release --base-href $base_href
           fi
