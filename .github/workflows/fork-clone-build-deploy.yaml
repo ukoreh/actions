@@ -130,7 +130,9 @@ jobs:
           flutter_version=${{ steps.flutter-version-finder.outputs.flutter-channel }}
           base_href="/${{ env.new-repo-name }}/"
 
-          if [[ $flutter_version =~ [1|2]\.[0-4]{1,}.+ ]]; then
+          echo "$flutter_version"
+
+          if [[ "$flutter_version" =~ [1|2]\.[0-4]{1,}.+ ]]; then
             flutter build web --release
             
             sed -i "s|href=\".*|href=\"$base_href\"|g" build/web/index.html
