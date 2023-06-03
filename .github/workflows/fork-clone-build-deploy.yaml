@@ -136,7 +136,9 @@ jobs:
             flutter build web --release
             
             sed -i "s|href=\".*|href=\"$base_href\"|g" build/web/index.html
-            sed -i "s|src=\"|src=\"$base_href/|g" build/web/index.html
+            sed -i "s|<head>|<head><base href=\"$base_href\">|g" build/web/index.html
+
+            #sed -i "s|src=\"|src=\"$base_href/|g" build/web/index.html
 
             cat build/web/index.html
           else
