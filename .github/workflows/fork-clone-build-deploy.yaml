@@ -75,7 +75,7 @@ jobs:
           ls /home/runner/work/actions
 
       - name: Find supported Flutter version
-        uses: ukoreh/actions@0f200332fdddd139959fbdf7c99bff1ad42cc0fd
+        uses: ukoreh/actions/flutter-version-finder@0f200332fdddd139959fbdf7c99bff1ad42cc0fd
         with:
           project-path: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
 
