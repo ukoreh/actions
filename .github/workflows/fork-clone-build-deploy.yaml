@@ -84,6 +84,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
+          channel: ${{ steps.flutter-version-finder.outputs.flutter-channel }}
 
       - name: Check if 'web' folder exists
         id: web-folder

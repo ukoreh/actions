@@ -8,6 +8,8 @@ inputs:
 outputs:
   flutter-version:
     description: "Supported Flutter version found"
+  flutter-channel:
+    description: "Supported Flutter channel"
 runs:
   using: "node16"
   main: "dist/index.js"
