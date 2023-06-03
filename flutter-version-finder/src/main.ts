@@ -3,7 +3,7 @@ import {
   default as finder,
   FallbackVersion
 } from '@web-pacotes/flutter-version-finder'
-import { existsSync, readFileSync } from 'fs'
+import {existsSync, readFileSync} from 'fs'
 
 async function run(): Promise<void> {
   try {
@@ -20,7 +20,7 @@ async function run(): Promise<void> {
 
     let yamlFilePath = pubspecLockFile
     let flutterVersion = FallbackVersion
-    let channel = 'stable';
+    let channel = 'stable'
 
     if (!existsSync(pubspecLockFile)) {
       core.info(`pubspec.lock doesn't exist, trying pubspec.yaml...`)

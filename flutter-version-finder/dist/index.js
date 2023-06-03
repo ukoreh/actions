@@ -54,6 +54,7 @@ function run() {
             const pubspecYAMLFile = `${path}/pubspec.yaml`;
             let yamlFilePath = pubspecLockFile;
             let flutterVersion = flutter_version_finder_1.FallbackVersion;
+            let channel = 'stable';
             if (!(0, fs_1.existsSync)(pubspecLockFile)) {
                 core.info(`pubspec.lock doesn't exist, trying pubspec.yaml...`);
                 yamlFilePath = pubspecYAMLFile;
@@ -66,7 +67,11 @@ function run() {
             const yaml = (0, fs_1.readFileSync)(yamlFilePath).toString();
             flutterVersion = (0, flutter_version_finder_1.default)(yaml);
             core.info(`found Flutter version: ${flutterVersion.flutter}; dart(${flutterVersion.dart})`);
+            if (flutterVersion.flutter.charAt(0) < '2') {
+                channel = 'beta';
+            }
             core.setOutput('flutter-version', flutterVersion.flutter);
+            core.setOutput('flutter-channel', channel);
         }
         catch (error) {
             if (error instanceof Error)
