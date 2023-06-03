@@ -115,7 +115,11 @@ jobs:
       - name: Build web app
         run: |
           cd ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}
-          flutter build web --release --base-href "/${{ env.new-repo-name }}/"
+
+          base_href="/${{ env.new-repo-name }}/"
+
+          flutter build web --release
+          sed -i "s|<base href=\".*\">|<base href=\"$path\">|g" build/web/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
