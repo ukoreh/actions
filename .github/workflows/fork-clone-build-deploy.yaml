@@ -75,6 +75,7 @@ jobs:
           ls /home/runner/work/actions
 
       - name: Find supported Flutter version
+        id: flutter-version-finder
         uses: ukoreh/actions/flutter-version-finder@2adf6f087c85e510fc800c0f38a432425f7fc392
         with:
           project-path: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
@@ -82,7 +83,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ steps.web-folder.outputs.flutter-version }}
+          flutter-version: ${{ steps.flutter-version-finder.outputs.flutter-version }}
 
       - name: Check if 'web' folder exists
         id: web-folder
