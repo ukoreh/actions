@@ -71,6 +71,8 @@ jobs:
             echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
           fi
 
+          ls
+
       - name: Find supported Flutter version
         uses: ./flutter-version-finder
         with:
