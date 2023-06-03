@@ -65,6 +65,7 @@ function run() {
             core.info(`using ${yamlFilePath} to get supported Flutter version...`);
             const yaml = (0, fs_1.readFileSync)(yamlFilePath).toString();
             flutterVersion = (0, flutter_version_finder_1.default)(yaml);
+            core.info(`found Flutter version: ${flutterVersion.flutter}; dart(${flutterVersion.dart})`);
             core.setOutput('flutter-version', flutterVersion.flutter);
         }
         catch (error) {

@@ -40,6 +40,10 @@ async function run(): Promise<void> {
     const yaml = readFileSync(yamlFilePath).toString()
     flutterVersion = finder(yaml)
 
+    core.info(
+      `found Flutter version: ${flutterVersion.flutter}; dart(${flutterVersion.dart})`
+    )
+
     core.setOutput('flutter-version', flutterVersion.flutter)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
