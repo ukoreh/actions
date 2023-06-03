@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "flutter-version-finder",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Finds the Flutter version supported to run a Flutter project",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,12 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/ukoreh.git"
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "flutter",
+    "version",
+    "finder",
+    "ukoreh"
   ],
   "author": "",
   "license": "MIT",
