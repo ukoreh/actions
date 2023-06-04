@@ -58,9 +58,9 @@ jobs:
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
-            async function repoExists(owner: string, repo: string): boolean {
+            async function repoExists(owner: string, repo: string): Promise<boolean> {
               try {
-                const response = await github.repos.createFork({
+                const response = await github.repos.get({
                   owner: owner,
                   repo: repo,
                 });
