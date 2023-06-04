@@ -48,10 +48,67 @@ jobs:
                 console.log(`Repository ${response.data.full_name} forked to organization ${org}`);
               } catch (error) {
                 console.error('Failed to fork repository:', error);
+                if(error.status === 404){
+                    console.error('Repository not found. Stop workflow');
+                    throw error
+                }
               }
             }
 
             forkRepo();
+
+      - name: Wait until the fork finishes
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          script: |
+            const owner = '${{ github.event.inputs.fork-org }}';
+            const repo = '${{ env.new-repo-name }}';
+
+             async function repoExists() {
+              try {
+                const response = await github.repos.get({
+                  owner: owner,
+                  repo: repo
+                });
+
+                console.log(`Repository ${response.data.full_name} was found.`);
+              } catch (error) {
+                console.error('Failed to get repository', error);
+                return error;
+              }
+            }
+
+            async function repoHasCommits() {
+              try {
+                const response = await github.repos.listCommits({
+                  owner: owner,
+                  repo: repo
+                });
+
+                if(response.status !== 200){
+                  console.log(`Didn't find commits for the repository ${repo}. Response ${response}`);
+                  return false;
+                }
+                console.log(`Repository ${repo} has commits.`);
+                return true;
+              } catch (error) {
+                console.error(`Failed to list commits of repository ${repo}`, error);
+                return false;
+              }
+            }
+
+            function delay(time) {
+              return new Promise(resolve => setTimeout(resolve, time));
+            }
+
+            repoExists();
+
+            let hasCommits = await repoHasCommits();
+            while(!hasCommits){
+              delay(2000)
+              hasCommits = await repoHasCommits();
+            }
 
       - name: Clone or Checkout repository
         uses: actions/checkout@v2
