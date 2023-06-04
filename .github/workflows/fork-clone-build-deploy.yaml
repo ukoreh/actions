@@ -58,7 +58,7 @@ jobs:
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
-            async function repoExists(owner: string, repo: string) {
+            async function repoExists(owner: string, repo: string): boolean {
               try {
                 const response = await github.repos.createFork({
                   owner: owner,
@@ -73,6 +73,7 @@ jobs:
                 return true;
               } catch (error) {
                 console.error('Failed to get repository:', error);
+                return false;
               }
             }
 
