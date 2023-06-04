@@ -94,10 +94,15 @@ jobs:
               }
             }
 
+            function delay(time) {
+              return new Promise(resolve => setTimeout(resolve, time));
+            }
+
             repoExists();
 
             let hasCommits = await repoHasCommits();
             while(!hasCommits){
+              delay(2000)
               hasCommits = await repoHasCommits();
             }
 
