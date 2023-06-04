@@ -53,6 +53,36 @@ jobs:
 
             forkRepo();
 
+      - name: Wait until the fork finishes
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          script: |
+            async function repoExists(owner: string, repo: string) {
+              try {
+                const response = await github.repos.createFork({
+                  owner: owner,
+                  repo: repo,
+                });
+
+                if(response.status !== 200){
+                  console.log(`Didn't find repository ${response.data.full_name}. Response: ${response}`);
+                  return false;
+                }
+                console.log(`Repository ${response.data.full_name} was found.`);
+                return true;
+              } catch (error) {
+                console.error('Failed to get repository:', error);
+              }
+            }
+
+            const owner = '${{ github.event.inputs.fork-org }}';
+            const repo = '${{ env.new-repo-name }}';
+            let exists = repoExists(owner, repo);
+            while(!exists){
+              exists = repoExists(owner, repo);
+            }
+
       - name: Clone or Checkout repository
         uses: actions/checkout@v2
         with:
