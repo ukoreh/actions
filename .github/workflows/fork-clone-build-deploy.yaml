@@ -58,6 +58,9 @@ jobs:
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
+            const owner = '${{ github.event.inputs.fork-org }}';
+            const repo = '${{ env.new-repo-name }}';
+
             async function repoExists(owner: string, repo: string): Promise<boolean> {
               try {
                 const response = await github.repos.get({
@@ -76,9 +79,7 @@ jobs:
                 return false;
               }
             }
-
-            const owner = '${{ github.event.inputs.fork-org }}';
-            const repo = '${{ env.new-repo-name }}';
+            
             let exists = repoExists(owner, repo);
             while(!exists){
               exists = repoExists(owner, repo);
