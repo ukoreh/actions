@@ -62,17 +62,17 @@ jobs:
               try {
                 const response = await github.repos.get({
                   owner: owner,
-                  repo: repo,
+                  repo: repo
                 });
 
                 if(response.status !== 200){
-                  console.log(`Didn't find repository ${response.data.full_name}. Response: ${response}`);
+                  console.log(`Didn't find repository ${response.data.full_name}. Response ${response}`);
                   return false;
                 }
                 console.log(`Repository ${response.data.full_name} was found.`);
                 return true;
               } catch (error) {
-                console.error('Failed to get repository:', error);
+                console.error('Failed to get repository', error);
                 return false;
               }
             }
