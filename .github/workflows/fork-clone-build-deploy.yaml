@@ -80,9 +80,9 @@ jobs:
               }
             }
 
-            let exists = repoHasCommits();
+            let exists = await repoHasCommits();
             while(!exists){
-              exists = repoHasCommits();
+              exists = await repoHasCommits();
             }
 
       - name: Clone or Checkout repository
