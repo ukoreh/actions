@@ -61,7 +61,7 @@ jobs:
             const owner = '${{ github.event.inputs.fork-org }}';
             const repo = '${{ env.new-repo-name }}';
 
-            async function repoExists(): Promise<boolean> {
+            async function repoExists() {
               try {
                 const response = await github.repos.get({
                   owner: owner,
