@@ -61,6 +61,20 @@ jobs:
             const owner = '${{ github.event.inputs.fork-org }}';
             const repo = '${{ env.new-repo-name }}';
 
+             async function repoExists() {
+              try {
+                const response = await github.repos.get({
+                  owner: owner,
+                  repo: repo
+                });
+
+                console.log(`Repository ${response.data.full_name} was found.`);
+              } catch (error) {
+                console.error('Failed to get repository', error);
+                return error;
+              }
+            }
+
             async function repoHasCommits() {
               try {
                 const response = await github.repos.listCommits({
@@ -80,9 +94,11 @@ jobs:
               }
             }
 
-            let exists = await repoHasCommits();
-            while(!exists){
-              exists = await repoHasCommits();
+            repoExists();
+
+            let hasCommits = await repoHasCommits();
+            while(!hasCommits){
+              hasCommits = await repoHasCommits();
             }
 
       - name: Clone or Checkout repository
