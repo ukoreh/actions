@@ -48,6 +48,10 @@ jobs:
                 console.log(`Repository ${response.data.full_name} forked to organization ${org}`);
               } catch (error) {
                 console.error('Failed to fork repository:', error);
+                if(error.status === 404){
+                    console.error('Repository not found. Stop workflow');
+                    throw error
+                }
               }
             }
 
