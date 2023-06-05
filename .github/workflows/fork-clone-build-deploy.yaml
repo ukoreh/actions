@@ -126,7 +126,7 @@ jobs:
             # Find the directory containing the file 'pubspec.yaml'
             PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
 
-            if [ -z "$PUBSPEC_DIR" ] then
+            if [ -z "$PUBSPEC_DIR" ]; then
               echo "pubspec.yaml file was not found. Stop workflow."
               exit 1
             else
