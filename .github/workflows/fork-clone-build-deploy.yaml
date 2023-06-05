@@ -127,9 +127,11 @@ jobs:
             PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
 
             if [ -z "$PUBSPEC_DIR" ] then
+              echo "pubspec.yaml file was not found. Stop workflow."
               exit 1
             else
               echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
       - name: Find supported Flutter version
