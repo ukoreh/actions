@@ -1,7 +1,6 @@
 name: Fork - Clone - Build flutter App - Deploy to gh-pages
 run-name: ${{ github.event.inputs.owner }}/${{ github.event.inputs.repo }}
 on:
-  push: #initially create the workflow when we first do our git push, otherwise, we will get a 404 NOT FOUND error when we first invoke the workflow API
   workflow_dispatch:
     inputs:
       owner:
@@ -120,18 +119,44 @@ jobs:
       - name: Find Flutter project path
         id: flutter-project-project-path
         run: |
-          if  [ -f ./pubspec.yaml ]; then
-            echo "FLUTTER_PROJECT_PATH=$PWD" >> "$GITHUB_OUTPUT"
-          else
-            # Find the directory containing the file 'pubspec.yaml'
-            PUBSPEC_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
+          # Find the directory containing the file with the string 'project_type: app'
+          METADATA_DIR=$(dirname $(grep -Eril "project_type: app" *) | sort -u)
 
-            if [ -z "$PUBSPEC_DIR" ]; then
-              echo "pubspec.yaml file was not found. Stop workflow."
-              exit 1
-            else
-              echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
-            fi
+          if [ ! -z "$METADATA_DIR" ]; then
+              echo "Found .metadata file under '$METADATA_DIR' folder"
+              echo "FLUTTER_PROJECT_PATH=$METADATA_DIR" >> "$GITHUB_OUTPUT"
+
+          else
+              # Find the directory containing the file 'pubspec.lock'
+              PUBSPEC_LOCK_DIR=$(find . -name "pubspec.lock" -exec dirname {} \;)
+
+              if [ ! -z "$PUBSPEC_LOCK_DIR" ]; then
+                  echo "pubspec.lock file was found."
+
+                  while IFS= read -r dir
+                  do
+                      if [[ -d "$dir/web" || -d "$dir/android" || -d "$dir/ios" || -d "$dir/linux" || -d "$dir/windows" || -d "$dir/macos" ]]; then
+                          echo "Found pubspec.lock in the same folder as the other important flutter folders. This is under '$dir'"
+                          echo "FLUTTER_PROJECT_PATH=$1" >> "$GITHUB_OUTPUT"
+                          exit 0
+                      else
+                          shift
+                      fi
+                  done <<< "$PUBSPEC_LOCK_DIR"
+
+                  echo "None of the pubspec.lock files was found in the same folder as the other important flutter folders."
+              fi
+
+              # Find the first directory containing the file 'pubspec.yaml'
+              PUBSPEC_DIR=$(dirname $(find . -name "pubspec.yaml" | head -n 1))
+
+              if [ -z "$PUBSPEC_DIR" ]; then
+                  echo "pubspec.yaml file was not found. Stop workflow."
+                  exit 1
+              else
+                  echo "pubspec.yaml file was found under '$PUBSPEC_DIR'."
+                  echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
+              fi
           fi
 
       - name: Find supported Flutter version
