@@ -138,7 +138,7 @@ jobs:
                   do
                       if [[ -d "$dir/web" || -d "$dir/android" || -d "$dir/ios" || -d "$dir/linux" || -d "$dir/windows" || -d "$dir/macos" ]]; then
                           echo "Found pubspec.lock in the same folder as the other important flutter folders. This is under '$dir'"
-                          echo "FLUTTER_PROJECT_PATH=$1" >> "$GITHUB_OUTPUT"
+                          echo "FLUTTER_PROJECT_PATH=$dir" >> "$GITHUB_OUTPUT"
 
                           echo "2. path: $FLUTTER_PROJECT_PATH"
                           exit 0
