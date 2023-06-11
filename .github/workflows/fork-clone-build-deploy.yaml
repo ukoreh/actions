@@ -185,6 +185,8 @@ jobs:
       - name: Check if 'web' folder exists
         id: web-folder
         run: |
+          cd ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
+
           echo "path now: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}"
 
           if [ -d "web" ]; then
