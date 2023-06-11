@@ -186,6 +186,9 @@ jobs:
         run: |
           cd ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
 
+          echo ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
+          ls
+
           if [ -d "web" ]; then
             echo "'web' folder exists in the same directory as 'pubspec.yaml'."
 
