@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@web-pacotes/flutter-version-finder": "^0.0.1"
+    "@web-pacotes/flutter-version-finder": "^0.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
