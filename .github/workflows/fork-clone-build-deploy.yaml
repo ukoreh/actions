@@ -125,7 +125,6 @@ jobs:
           if [ ! -z "$METADATA_DIR" ]; then
               echo "Found .metadata file under '$METADATA_DIR' folder"
               echo "FLUTTER_PROJECT_PATH=$METADATA_DIR" >> "$GITHUB_OUTPUT"
-
           else
               # Find the directory containing the file 'pubspec.lock'
               PUBSPEC_LOCK_DIR=$(find . -name "pubspec.lock" -exec dirname {} \;)
@@ -137,7 +136,8 @@ jobs:
                   do
                       if [[ -d "$dir/web" || -d "$dir/android" || -d "$dir/ios" || -d "$dir/linux" || -d "$dir/windows" || -d "$dir/macos" ]]; then
                           echo "Found pubspec.lock in the same folder as the other important flutter folders. This is under '$dir'"
-                          echo "FLUTTER_PROJECT_PATH=$1" >> "$GITHUB_OUTPUT"
+                          echo "FLUTTER_PROJECT_PATH=$dir" >> "$GITHUB_OUTPUT"
+
                           exit 0
                       else
                           shift
@@ -155,6 +155,7 @@ jobs:
                   exit 1
               else
                   echo "pubspec.yaml file was found under '$PUBSPEC_DIR'."
+
                   echo "FLUTTER_PROJECT_PATH=$PUBSPEC_DIR" >> "$GITHUB_OUTPUT"
               fi
           fi
@@ -185,6 +186,8 @@ jobs:
         id: web-folder
         run: |
           cd ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}
+
+          echo "path now: ${{ steps.flutter-project-project-path.outputs.FLUTTER_PROJECT_PATH }}"
 
           if [ -d "web" ]; then
             echo "'web' folder exists in the same directory as 'pubspec.yaml'."
