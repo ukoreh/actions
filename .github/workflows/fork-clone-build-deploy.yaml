@@ -277,6 +277,8 @@ jobs:
                 const existingIssue = issues.find(issue => issue.title === title);
 
                 const exists = existingIssue !== undefined;
+
+                console.log(`Issue with title "${title}" exists: ${exists}`);
           
                 return exists;
 
@@ -285,10 +287,9 @@ jobs:
               }
             }
 
-            const exists = issueExists();
-            console.log(`Issue with title "${title}" exists: ${exists}`);
+            const exists = await issueExists();
             
             if (!exists) {
-              console.log(`Creating issue with title ${newIssue.data.title}`);
+              console.log(`Creating issue with title ${title}`);
               createIssue();
             }
