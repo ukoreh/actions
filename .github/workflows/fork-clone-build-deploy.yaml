@@ -278,8 +278,6 @@ jobs:
 
                 const exists = existingIssue !== undefined;
           
-                console.log(`Issue with title "${title}" exists: ${exists}`);
-          
                 return exists;
 
               } catch (error) {
@@ -287,6 +285,10 @@ jobs:
               }
             }
 
-            if(!issueExists()){
+            const exists = issueExists();
+            console.log(`Issue with title "${title}" exists: ${exists}`);
+            
+            if (!exists) {
+              console.log(`Creating issue with title ${newIssue.data.title}`);
               createIssue();
             }
