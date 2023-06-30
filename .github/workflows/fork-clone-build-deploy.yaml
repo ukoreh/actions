@@ -242,9 +242,10 @@ jobs:
           script: |
             const owner = '${{ github.event.inputs.owner }}';
             const repo = '${{ github.event.inputs.repo }}';
+            const org = '${{ github.event.inputs.fork-org }}';
+            const name = '${{ env.new-repo-name }}';
             const title = "Your web app is ready!";
-            const body = `'https://${github.event.inputs.fork-org}.github.io/${env.new-repo-name}'`;
-            
+            const body = `https://${org}.github.io/${name}`;
       
             async function createIssue() {
               try {
