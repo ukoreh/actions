@@ -262,7 +262,6 @@ jobs:
                 console.error('Failed to create issue:', error);
                 if(error.status === 410){
                   console.error('Issues are disabled in the repository');
-                  throw error
                 }
               }
             }
