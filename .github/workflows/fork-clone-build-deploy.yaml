@@ -234,3 +234,65 @@ jobs:
           publish_dir: ${{ steps.web-folder.outputs.WEB_FOLDER_LOCATION }}/build/web
           external_repository: ${{ github.event.inputs.fork-org }}/${{ env.new-repo-name }}
           publish_branch: gh-pages
+
+      - name: Create issue in the forked repository
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          script: |
+            const owner = '${{ github.event.inputs.owner }}';
+            const repo = '${{ github.event.inputs.repo }}';
+            const org = '${{ github.event.inputs.fork-org }}';
+            const name = '${{ env.new-repo-name }}';
+            const title = "Your web app is ready! 🚀";
+            const body = `Hey! 👋
+            
+            Someone has requested a demo of your project using [Ukoreh](https://ukoreh.fun/)! 🧙‍♂️.
+            
+            The app compiled fine and is now live at https://${org}.github.io/${name}`;
+      
+            async function createIssue() {
+              try {
+                const newIssue = await github.issues.create({
+                  owner: owner,
+                  repo: repo,
+                  title: title,
+                  body: body,
+                });
+
+                console.log(`Created issue ${newIssue.data.number}: ${newIssue.data.title}`);
+
+              } catch (error) {
+                console.error('Failed to create issue:', error);
+                if(error.status === 410){
+                  console.error('Issues are disabled in the repository');
+                }
+              }
+            }
+
+            async function issueExists() {
+              try {
+                const { data: issues } = await github.issues.listForRepo({
+                  owner: owner,
+                  repo: repo,
+                });
+          
+                const existingIssue = issues.find(issue => issue.title === title);
+
+                const exists = existingIssue !== undefined;
+
+                console.log(`Issue with title "${title}" exists: ${exists}`);
+          
+                return exists;
+
+              } catch (error) {
+                console.error('Failed to validate if issue already exists:', error);
+              }
+            }
+
+            const exists = await issueExists();
+            
+            if (!exists) {
+              console.log(`Creating issue with title ${title}`);
+              createIssue();
+            }
