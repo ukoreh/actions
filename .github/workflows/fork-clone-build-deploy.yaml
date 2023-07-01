@@ -249,7 +249,7 @@ jobs:
             
             Someone has requested a demo of your project using [Ukoreh](https://ukoreh.fun/)! 🧙‍♂️.
             
-            The app compiled fine is now live at https://${org}.github.io/${name}`;
+            The app compiled fine and is now live at https://${org}.github.io/${name}`;
       
             async function createIssue() {
               try {
