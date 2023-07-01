@@ -244,9 +244,12 @@ jobs:
             const repo = '${{ github.event.inputs.repo }}';
             const org = '${{ github.event.inputs.fork-org }}';
             const name = '${{ env.new-repo-name }}';
-            const title = "Your web app is ready!";
-            const body = `Someone has requested a demo of your project using [Ukoreh](https://ukoreh.fun/). 
-            The app is now live at https://${org}.github.io/${name}`;
+            const title = "Your web app is ready! 🚀";
+            const body = `Hey! 👋
+            
+            Someone has requested a demo of your project using [Ukoreh](https://ukoreh.fun/)! 🧙‍♂️.
+            
+            The app compiled fine is now live at https://${org}.github.io/${name}`;
       
             async function createIssue() {
               try {
