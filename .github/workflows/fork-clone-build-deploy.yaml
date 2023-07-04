@@ -110,7 +110,7 @@ jobs:
 
             let hasCommits = await repoHasCommits();
             while(!hasCommits){
-              delay(delayTime)
+              await delay(delayTime)
               hasCommits = await repoHasCommits();
             }
 
