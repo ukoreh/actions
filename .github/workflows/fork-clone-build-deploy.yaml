@@ -102,6 +102,7 @@ jobs:
             }
 
             function delay(time) {
+              console.log(`Delay for ${time} miliseconds`)
               return new Promise(resolve => setTimeout(resolve, time));
             }
 
