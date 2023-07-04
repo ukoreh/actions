@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       new-repo-name: ${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
+      delay-miliseconds-to-validate-fork-finished: 5000
     timeout-minutes: 7
     steps:
       - name: ${{ github.event.inputs.run-id }}
@@ -65,6 +66,7 @@ jobs:
           script: |
             const owner = '${{ github.event.inputs.fork-org }}';
             const repo = '${{ env.new-repo-name }}';
+            const delayTime = ${{ env.delay-miliseconds-to-validate-fork-finished }};
 
              async function repoExists() {
               try {
@@ -107,7 +109,7 @@ jobs:
 
             let hasCommits = await repoHasCommits();
             while(!hasCommits){
-              delay(2000)
+              delay(delayTime)
               hasCommits = await repoHasCommits();
             }
 
