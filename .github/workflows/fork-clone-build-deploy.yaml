@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       new-repo-name: ${{ github.event.inputs.owner }}-${{ github.event.inputs.repo }}
+    timeout-minutes: 7
     steps:
       - name: ${{ github.event.inputs.run-id }}
         run: |
