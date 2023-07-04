@@ -279,6 +279,7 @@ jobs:
                 const { data: issues } = await github.issues.listForRepo({
                   owner: owner,
                   repo: repo,
+                  state: 'all'
                 });
           
                 const existingIssue = issues.find(issue => issue.title === title);
