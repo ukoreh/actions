@@ -8,6 +8,14 @@ Workflows to get your Flutter project as a web app with GitHub Pages.
 ![Workflow steps](./docs/action-steps.drawio.svg)
 
 
+## Feature Flags
+
+The following flags are used to enable/disable features in the workflow
+
+| Flag Name | Flag Description |
+| :--: | :-- |
+| `FF_STEP_CREATE_ISSUE` | Repository variable used to enable/disable the step '_Create issue in the forked repository_' |
+
 ## GitHub Action Workflow Inputs
 
 The following inputs must be passed to the workflow
