@@ -240,7 +240,7 @@ jobs:
           publish_branch: gh-pages
 
       - name: Create issue in the forked repository
-        if: ${{ env.FF_STEP_CREATE_ISSUE }}
+        if: ${{ env.FF_STEP_CREATE_ISSUE == 'true' }}
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
