@@ -78,7 +78,7 @@ jobs:
                 console.log(`Repository ${response.data.full_name} was found.`);
               } catch (error) {
                 console.error('Failed to get repository', error);
-                return error;
+                throw error;
               }
             }
 
@@ -240,6 +240,7 @@ jobs:
           publish_branch: gh-pages
 
       - name: Create issue in the forked repository
+        if: ${{ vars.FF_STEP_CREATE_ISSUE == 'true' }}
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
